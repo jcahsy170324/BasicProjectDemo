@@ -1,6 +1,8 @@
 package com.lg.bsp.service.impl;
 
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.lg.bsp.common.MyPageInfo;
 import com.lg.bsp.dao.EmpMapper;
 import com.lg.bsp.model.Emp;
 import com.lg.bsp.service.EmpService;
@@ -25,18 +27,39 @@ public class EmpServiceImpl implements EmpService {
 
     @Autowired
     private EmpMapper empMapper;
+
     @Override
-    public List<Emp> findEmpByCondition(Integer pageNum, Integer pageSize, Integer empno, String ename, String job, Integer mgr, Date hiredate, Double sal, Double comm) {
-        HashMap<String,Object> map = new HashMap<>(10);
-        map.put("empno",empno);
-        map.put("ename",ename);
-        map.put("job",job);
-        map.put("mgr",mgr);
-        map.put("hiredate",hiredate);
-        map.put("sal",sal);
-        map.put("comm",comm);
-        PageHelper.startPage(pageNum,pageSize);
-        empMapper.findEmpByCondition(map);
-        return null;
+    public MyPageInfo<Emp> findEmpByCondition(Integer pageNum, Integer pageSize, Integer empno, String ename, String job, Integer mgr, Date hiredate, Double sal, Double comm, Integer deptno) {
+        HashMap<String, Object> map = new HashMap<>(10);
+        map.put("empno", empno);
+        map.put("ename", ename);
+        map.put("job", job);
+        map.put("mgr", mgr);
+        map.put("hiredate", hiredate);
+        map.put("sal", sal);
+        map.put("comm", comm);
+        map.put("deptno", deptno);
+        PageHelper.startPage(pageNum, pageSize);
+        List<Emp> empByCondition = empMapper.findEmpByCondition(map);
+        PageInfo<Emp> pageInfo = new PageInfo<>(empByCondition);
+        MyPageInfo<Emp> myPageInfo = new MyPageInfo<>(pageNum,pageSize,pageInfo.getTotal(),pageInfo.getPages(),pageInfo.getList());
+        return myPageInfo;
+    }
+
+    @Override
+    public Integer updateEmpByCondition(Emp emp) {
+        Integer empno = emp.getEmpno();
+        Integer result = -1;
+        if (null == empno){
+            return -1;
+        }else{
+            Emp empByEmpno = empMapper.findEmpByEmpno(empno);
+            if (null == empByEmpno){
+                return -1;
+            }else {
+                result = empMapper.updateEmpByCondition(emp);
+            }
+        }
+        return result;
     }
 }

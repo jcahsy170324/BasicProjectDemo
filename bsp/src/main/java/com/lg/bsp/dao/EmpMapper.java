@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface EmpMapper {
     List<Emp> findEmpByCondition(HashMap<String, Object> map);
+
+    Emp findEmpByEmpno(Integer empno);
+
+    Integer updateEmpByCondition(Emp emp);
 }
