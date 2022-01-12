@@ -146,6 +146,12 @@
             <version>2.4</version>
         </dependency>
 
+        <!--Scheduled是Spring3.0后内置的定时任务器-->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
