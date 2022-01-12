@@ -2,6 +2,7 @@ package com.lg.bsp.controller;
 
 import com.lg.bsp.common.MyPageInfo;
 import com.lg.bsp.common.VResponse;
+import com.lg.bsp.model.Dept;
 import com.lg.bsp.model.Emp;
 import com.lg.bsp.service.EmpService;
 import io.swagger.annotations.Api;
@@ -53,10 +54,64 @@ public class EmpController {
         return VResponse.success(empByCondition);
     }
 
+    @ApiOperation("修改员工信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "emp", value = "员工信息", dataType = "Emp")
+    })
     @PutMapping("/update")
     public VResponse<Object> updateEmpByCondition(@RequestBody Emp emp){
         Integer result = empService.updateEmpByCondition(emp);
         return result > 0 ? VResponse.success("update success"):VResponse.error(0,"update fail");
+    }
+
+    @ApiOperation("根据员工编号集查找员工信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "empnos", value = "员工编号集", dataType = "List<Integer>")
+    })
+    @GetMapping("/findEmpInEmpnos")
+    public VResponse<Object> findEmpInEmpnos(@RequestParam List<Integer> empnos){
+        List<Emp> empInEmpnos = empService.findEmpInEmpnos(empnos);
+        return VResponse.success(empInEmpnos);
+    }
+
+    @ApiOperation("根据员工编号查询员工信息和部门信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "empno", value = "员工编号", dataType = "Integer")
+    })
+    @GetMapping("/findEmpJoinDeptByEmpno")
+    public VResponse<Object> findEmpJoinDeptByEmpno(@RequestParam Integer empno){
+        Emp empJoinDeptByEmpno = empService.findEmpJoinDeptByEmpno(empno);
+        return VResponse.success(empJoinDeptByEmpno);
+    }
+
+    @ApiOperation("根据部门编号查询部门信息和该部门所有员工信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "deptno", value = "部门编号", dataType = "Integer")
+    })
+    @GetMapping("/findDeptJoinEmpsByDeptno")
+    public VResponse<Object> findDeptJoinEmpsByDeptno(@RequestParam Integer deptno){
+        Dept deptJoinEmpsByDeptno = empService.findDeptJoinEmpsByDeptno(deptno);
+        return VResponse.success(deptJoinEmpsByDeptno);
+    }
+
+    @ApiOperation("新增员工")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "emp", value = "员工信息", dataType = "Emp")
+    })
+    @PostMapping("/addEmp")
+    public VResponse<Object> addEmpDept(@RequestBody Emp emp){
+        Integer result = empService.addEmp(emp);
+        return result > 0 ? VResponse.success("add success") : VResponse.error(0,"add fail");
+    }
+
+    @ApiOperation("删除员工")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "empno", value = "员工编号", dataType = "Integer")
+    })
+    @DeleteMapping("/deleteEmp")
+    public VResponse<Object> deleteEmp(@RequestParam Integer empno){
+        Integer result = empService.deleteEmp(empno);
+        return result > 0 ? VResponse.success("delete success") : VResponse.error(0,"delete fail");
     }
 
 }

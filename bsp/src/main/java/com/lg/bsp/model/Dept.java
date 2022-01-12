@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @ClassName Dept
@@ -17,7 +18,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Dept implements Serializable {
-    private Integer deptNo;
+    private Integer deptno;
     private String dname;
     private String loc;
+
+    /**
+     * @Description //组合一个emp的List作为属性
+     **/
+    private List<Emp> empList;
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lg.bsp.common.MyPageInfo;
 import com.lg.bsp.dao.EmpMapper;
+import com.lg.bsp.model.Dept;
 import com.lg.bsp.model.Emp;
 import com.lg.bsp.service.EmpService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,5 +62,30 @@ public class EmpServiceImpl implements EmpService {
             }
         }
         return result;
+    }
+
+    @Override
+    public List<Emp> findEmpInEmpnos(List<Integer> empnos) {
+        return empMapper.findEmpInEmpnos(empnos);
+    }
+
+    @Override
+    public Emp findEmpJoinDeptByEmpno(Integer empno) {
+        return empMapper.findEmpJoinDeptByEmpno(empno);
+    }
+
+    @Override
+    public Dept findDeptJoinEmpsByDeptno(Integer deptno) {
+        return empMapper.findDeptJoinEmpsByDeptno(deptno);
+    }
+
+    @Override
+    public Integer addEmp(Emp emp) {
+        return empMapper.addEmp(emp);
+    }
+
+    @Override
+    public Integer deleteEmp(Integer empno) {
+        return empMapper.deleteEmp(empno);
     }
 }

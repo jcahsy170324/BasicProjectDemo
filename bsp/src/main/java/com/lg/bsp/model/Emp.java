@@ -27,4 +27,8 @@ public class Emp implements Serializable {
     private Double comm;
     private Integer deptno;
 
+    /**
+     * @Description //组合一个Dept对象作为自己的属性
+     **/
+    private Dept dept;
 }

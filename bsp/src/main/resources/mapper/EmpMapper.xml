@@ -3,7 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lg.bsp.dao.EmpMapper">
-    <sql id="empColumn">empno,ename,job,mgr,hiredate,sal,comm</sql>
+    <sql id="empColumn">empno,ename,job,mgr,hiredate,sal,comm,deptno</sql>
+    <sql id="empJoinDeptColumn">empno,ename,job,mgr,hiredate,sal,comm,e.deptno,dname,loc</sql>
     <select id="findEmpByCondition" resultType="com.lg.bsp.model.Emp">
         select <include refid="empColumn"/>
         from emp
@@ -70,4 +71,67 @@
         </set>
         where empno = #{empno}
     </update>
+
+    <select id="findEmpInEmpnos" resultType="com.lg.bsp.model.Emp">
+        select <include refid="empColumn"/>
+        from emp
+        where empno in
+        <foreach collection="list" open="(" separator="," close=")" item="empno">
+            #{empno}
+        </foreach>
+    </select>
+
+    <resultMap id="empJoinDept" type="emp">
+        <id property="empno" column="empno"></id>
+        <result property="ename" column="ename"></result>
+        <result property="job" column="job"></result>
+        <result property="sal" column="sal"></result>
+        <result property="hiredate" column="hiredate"></result>
+        <result property="mgr" column="mgr"></result>
+        <result property="comm" column="comm"></result>
+        <result property="deptno" column="deptno"></result>
+        <association property="dept" javaType="dept">
+            <id property="deptNo" column="deptno"></id>
+            <result property="dname" column="dname"></result>
+            <result property="loc" column="loc"></result>
+        </association>
+    </resultMap>
+
+    <select id="findEmpJoinDeptByEmpno" resultMap="empJoinDept">
+        select <include refid="empJoinDeptColumn"/>
+        from emp e left join dept d
+        on d.deptno = e.deptno
+        where empno = #{empno}
+    </select>
+    
+    <resultMap id="deptJoinEmps" type="dept">
+        <id property="deptno" column="deptno"></id>
+        <result property="dname" column="dname"></result>
+        <result property="loc" column="loc"></result>
+        <collection property="empList" ofType="emp">
+            <id property="empno" column="empno"></id>
+            <result property="ename" column="ename"></result>
+            <result property="job" column="job"></result>
+            <result property="sal" column="sal"></result>
+            <result property="hiredate" column="hiredate"></result>
+            <result property="mgr" column="mgr"></result>
+            <result property="comm" column="comm"></result>
+            <result property="deptno" column="deptno"></result>
+        </collection>
+    </resultMap>
+    <select id="findDeptJoinEmpsByDeptno" resultMap="deptJoinEmps">
+        select <include refid="empJoinDeptColumn"/>
+        from dept d left join emp e
+        on d.deptno = e.deptno
+        where d.deptno = #{deptno}
+    </select>
+
+    <insert id="addEmp">
+        insert into emp values(default,#{ename},#{job},#{sal},#{hiredate},#{mgr},#{comm},#{deptno})
+    </insert>
+
+    <delete id="deleteEmp">
+        delete from emp
+        where empno = #{empno}
+    </delete>
 </mapper>
