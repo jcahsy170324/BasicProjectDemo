@@ -34,7 +34,7 @@ public class UserController {
     }
     )
     @GetMapping("/findAll/{pageNum}/{pageSize}")
-    public VResponse<Object> findAll(@PathVariable("pageNum") Integer pageNum, @PathVariable("pageSize") Integer pageSize) {
+    public VResponse<Object> findAll(@PathVariable(value = "pageNum",required = true) Integer pageNum, @PathVariable(value = "pageSize",required = true) Integer pageSize) {
         MyPageInfo<User> all = userService.findAll(pageNum, pageSize);
         return VResponse.success("OK",all);
     }
@@ -45,7 +45,7 @@ public class UserController {
     }
     )
     @GetMapping("/findOne/{id}")
-    public VResponse<Object> findOne(@PathVariable("id") Integer id){
+    public VResponse<Object> findOne(@PathVariable(value = "id",required = true) Integer id){
         User one = userService.findOne(id);
         return VResponse.success("OK",one);
     }
