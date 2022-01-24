@@ -8,10 +8,13 @@ import com.lg.bsp.model.Dept;
 import com.lg.bsp.model.Emp;
 import com.lg.bsp.service.EmpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,6 +31,8 @@ public class EmpServiceImpl implements EmpService {
 
     @Autowired
     private EmpMapper empMapper;
+    @Autowired
+    private RedisTemplate<String,Object> redisTemplate;
 
     @Override
     public MyPageInfo<Emp> findEmpByCondition(Integer pageNum, Integer pageSize, Integer empno, String ename, String job, Integer mgr, Date hiredate, Double sal, Double comm, Integer deptno) {
@@ -66,7 +71,29 @@ public class EmpServiceImpl implements EmpService {
 
     @Override
     public List<Emp> findEmpInEmpnos(List<Integer> empnos) {
-        return empMapper.findEmpInEmpnos(empnos);
+        List<Emp> emps= new ArrayList<>();
+        String key = null;
+        for (Integer id : empnos) {
+            key = "emp:" + id;
+            //先从redis中获取数据
+            if (redisTemplate.hasKey(key)){
+                System.out.println("执行缓存");
+                redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<Emp>(Emp.class));
+                Emp emp = (Emp) redisTemplate.opsForValue().get(key);
+                if (null != emp){
+                    emps.add(emp);
+                }
+            }
+        }
+        if (null != emps){
+            return emps;
+        }
+        List<Emp> empInEmpnos = empMapper.findEmpInEmpnos(empnos);
+        for (Emp empInEmpno : empInEmpnos) {
+            key = "emp:" + empInEmpno.getEmpno();
+            redisTemplate.opsForValue().set(key,empInEmpno);
+        }
+        return empInEmpnos;
     }
 
     @Override

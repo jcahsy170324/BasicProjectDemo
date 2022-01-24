@@ -1,8 +1,7 @@
 package com.lg.bsp.controller;
 
-import com.lg.bsp.common.CookieUtil;
 import com.lg.bsp.common.MyPageInfo;
-import com.lg.bsp.common.VResponse;
+import com.lg.bsp.common.ApiFinalResult;
 import com.lg.bsp.model.User;
 import com.lg.bsp.service.UserService;
 import io.swagger.annotations.Api;
@@ -29,25 +28,25 @@ public class UserController {
 
     @ApiOperation("分页查询用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "pageNum", value = "页码", dataType = "Integer"),
-            @ApiImplicitParam(name = "pageSize", value = "分页数量", dataType = "Integer")
+            @ApiImplicitParam(name = "pageNum",required = true, dataType = "Integer",value = "页码", paramType = "path"),
+            @ApiImplicitParam(name = "pageSize",required = true, dataType = "Integer",value = "分页数量", paramType = "path")
     }
     )
     @GetMapping("/findAll/{pageNum}/{pageSize}")
-    public VResponse<Object> findAll(@PathVariable(value = "pageNum",required = true) Integer pageNum, @PathVariable(value = "pageSize",required = true) Integer pageSize) {
+    public ApiFinalResult<Object> findAll(@PathVariable(value = "pageNum",required = true) Integer pageNum, @PathVariable(value = "pageSize",required = true) Integer pageSize) {
         MyPageInfo<User> all = userService.findAll(pageNum, pageSize);
-        return VResponse.success("OK",all);
+        return ApiFinalResult.success("OK",all);
     }
 
     @ApiOperation("根据id查询用户")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "id", value = "用户ID", dataType = "Integer")
+            @ApiImplicitParam(name = "id",required = true, value = "用户ID", dataType = "Integer")
     }
     )
     @GetMapping("/findOne/{id}")
-    public VResponse<Object> findOne(@PathVariable(value = "id",required = true) Integer id){
+    public ApiFinalResult<Object> findOne(@PathVariable(value = "id",required = true) Integer id){
         User one = userService.findOne(id);
-        return VResponse.success("OK",one);
+        return ApiFinalResult.success("OK",one);
     }
 
     @ApiOperation("新增用户")
@@ -55,9 +54,9 @@ public class UserController {
             @ApiImplicitParam(name = "user", value = "用户信息", dataType = "User")
     })
     @PostMapping("/insert")
-    public VResponse<Object> insertOne(@RequestBody User user){
+    public ApiFinalResult<Object> insertOne(@RequestBody User user){
         int res = userService.insertOne(user);
-        return res == 1? VResponse.success("add success"):VResponse.error(0,"add fail");
+        return res == 1? ApiFinalResult.success("add success"): ApiFinalResult.error(0,"add fail");
     }
 
     @ApiOperation("删除用户")
@@ -65,9 +64,9 @@ public class UserController {
             @ApiImplicitParam(name = "id", value = "用户ID", dataType = "Integer")
     })
     @DeleteMapping("/deleteOne")
-    public VResponse<Object> deleteOne(@RequestParam Integer id){
+    public ApiFinalResult<Object> deleteOne(@RequestParam Integer id){
         int res = userService.deleteOne(id);
-        return res == 1 ? VResponse.success("delete success"):VResponse.error(0,"delete fail");
+        return res == 1 ? ApiFinalResult.success("delete success"): ApiFinalResult.error(0,"delete fail");
     }
 
     @ApiOperation("更新用户信息")
@@ -75,9 +74,9 @@ public class UserController {
             @ApiImplicitParam(name = "user", value = "用户信息", dataType = "User")
     })
     @PostMapping("/updateOne")
-    public VResponse<Object> updateOne(@RequestBody User user){
+    public ApiFinalResult<Object> updateOne(@RequestBody User user){
         int res = userService.updateOne(user);
-        return res == 1? VResponse.success("update success"):VResponse.error(0,"update fail");
+        return res == 1? ApiFinalResult.success("update success"): ApiFinalResult.error(0,"update fail");
     }
 
 

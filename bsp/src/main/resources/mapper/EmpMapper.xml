@@ -91,7 +91,7 @@
         <result property="comm" column="comm"></result>
         <result property="deptno" column="deptno"></result>
         <association property="dept" javaType="dept">
-            <id property="deptNo" column="deptno"></id>
+            <id property="deptno" column="deptno"></id>
             <result property="dname" column="dname"></result>
             <result property="loc" column="loc"></result>
         </association>

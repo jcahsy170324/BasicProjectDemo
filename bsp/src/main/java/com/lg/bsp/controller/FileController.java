@@ -2,6 +2,9 @@ package com.lg.bsp.controller;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +37,11 @@ public class FileController {
      * @Author jincheng
      * @Description //文件存储位置/
      * */
-    private final static String FILESERVER = "http://172.16.52.44:8080/upload/";
+    private final static String FILESERVER = "http://172.16.52.155:8080/upload/";
+    @ApiOperation("上传文件")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "headPhoto", value = "文件", dataType = "MultipartFile")
+    })
     @PostMapping("/upload")
     public Map<String,String> upload(MultipartFile headPhoto, HttpServletRequest req) throws IOException {
         Map<String,String> map=new HashMap<>();
